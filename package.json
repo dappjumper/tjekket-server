@@ -1,0 +1,32 @@
+{
+  "name": "tjekket",
+  "version": "1.0.0",
+  "description": "- The challenge consists of creating a simple REST-based API. Using NodeJS you should create a REST API for a simple shopping list, that can be run locally on a development machine.",
+  "main": "server.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.22",
+    "passport-jwt": "^4.0.0",
+    "socket-io": "^1.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dappjumper/tjekket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dappjumper/tjekket/issues"
+  },
+  "homepage": "https://github.com/dappjumper/tjekket#readme"
+}
