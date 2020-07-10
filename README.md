@@ -1,19 +1,53 @@
 # tjekket.dk Coding Challenge
 - The challenge consists of creating a simple REST-based API. Using NodeJS you should create a REST API for a simple shopping list, that can be run locally on a development machine.
 
-## The REST API should contain the following features:
+## Introduction
+This repository is intended to be used as a stand-alone API server that uses JWT tokens to provide a session-less shopping service, as well as to demonstrate RESTful design patterns.
 
-- Your solution should include a CRUD for the shopping list.
-- Your solution should include a CRUD for items on the shopping list.
-- User access control (Owner has RW access while Buyer has Read-only access).
-- Your solution should include a README file that explains how to run the service locally and run any tests there if provided.
+## Pre-requisites
+1. A mongoDB instance with URI access
+2. NodeJs
+3. NPM
+4. (optionally hosting provider)
 
+## Setup
+1. Clone this repository
+2. `npm install`
+3. Setup environment variable as defined in the next section
+4. `npm run start`
+5. (optionally run `npm run test` to perform End-To-End testing)
 
-## Bonus:
+### Environment variables
+```PORT=80
+MONGODB_URI=mongodb+srv://<user>:<password>@<dbhost>/<database>?retryWrites=true&w=majority
+JWT_SECRET=<a long and well-kept secret>
+OWNER_EMAIL=<name@domain.tld>*
+```
+*: User made with this email will become elevated to owner upon [registering](doc/user/put.md)
 
-- Test coverage of your code.
-- Using our Core API (https://developers.shopgun.com/v2) for finding an offer to add to list
+## Public endpoints
+These endpoints require no Authentication
+* [Read Catalog](doc/catalog/get.md) : GET `/catalog/{id}`
+* [Read Item](doc/item/get.md) : GET `/item/{id}`
+* [Login & Registration](doc/user/put.md) : PUT `/user`
 
-General Notes:
+## Endpoints that require Authentication
+Closed endpoints require a valid JWT token in the Authentication header of the request.
+A token can be acquired from the [Login & Registration](user/put.md) endpoint
 
-- You can use frameworks or libraries of your choice.
+Requests are further divided in roles `owner` <- `admin` <- `user`
+
+## User related
+* [Get specific user](doc/user/get.md) : GET `/user/{id}`
+* [Update user](doc/user/post.md) : POST `/user`
+* [Delete user](doc/user/delete.md) : DELETE `/user`
+
+## Catalog related
+* [Create empty catalog](doc/catalog/put.md) : PUT `/catalog`
+* [Update catalog](doc/catalog/post.md) : POST `/catalog`
+* [Delete catalog](doc/catalog/delete.md) : DELETE `/catalog`
+
+## Item related
+* [Create new item](doc/catalog/put.md) : PUT `/item`
+* [Update item](doc/catalog/post.md) : POST `/item`
+* [Delete item](doc/catalog/delete.md) : DELETE `/item`
