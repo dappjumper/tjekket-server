@@ -1,13 +1,25 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+const slug = require('mongoose-slug-generator');
+mongoose.plugin(slug);
+
 module.exports = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
-  name: String,
-  slug: String,
+  name: {
+    type: String,
+    default: 'New item',
+    required: true
+  },
+  slug: {
+    type: String,
+    slug: 'name',
+    unique: true
+  },
   items: {
     type: Array,
     default: [

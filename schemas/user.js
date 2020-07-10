@@ -1,30 +1,35 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Item = require('./../schemas/item')
 
 module.exports = new Schema({
-  name: String,
-  username: String,
-  email: String,
+  name: {
+    type: String,
+    required: true,
+    default: 'John Doe'
+  },
+  username: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
   isVerified: {
     type: Boolean,
     default: false
   },
-  password: String,
+  password: {
+    type: String,
+    required: true
+  },
   role: {
     type: String,
-    default: ''
+    default: 'user'
   },
-  cart: {
-    type: Array,
-    default: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Item'
-      }
-    ]
-  },
-  transactions: {
-    type: Array,
-    default: new Array(0)
-  }
+  cart: [Item],
+  transactions: []
 });

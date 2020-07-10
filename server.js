@@ -54,8 +54,16 @@ fs.readdir('./endpoints', (err, files) => {
 // Start database connection
 database.start()
     .then( () => {
+
         // Start the server on PORT
-        app.listen(port, () => console.log(`Tjekket challenge listening on port: ${port}`))
+        let server = app.listen(port, () => console.log(`Tjekket challenge listening on port: ${port}`))
+
+        // Spin up E2E test if asked to
+        if(process.env.TEST) {
+
+            // Spin up the testing file
+            let e2etest = require('./testing/e2e').start(server)
+        }
     })
     .catch( () => {
         throw 'Database connection failed!'
