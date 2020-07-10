@@ -1,6 +1,10 @@
 # tjekket.dk Coding Challenge
 - The challenge consists of creating a simple REST-based API. Using NodeJS you should create a REST API for a simple shopping list, that can be run locally on a development machine.
 
+[Root demo site](https://tjekket-server.hostman.site/)
+
+[Catalog example](https://tjekket-server.hostman.site/catalog/5f0870a0f140b82b98b1930b)
+
 ## Introduction
 This repository is intended to be used as a stand-alone API server that uses JWT tokens to provide a session-less shopping service, as well as to demonstrate RESTful design patterns.
 
