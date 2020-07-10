@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Item = require('./../schemas/item')
 
 module.exports = new Schema({
   name: {
@@ -29,7 +28,5 @@ module.exports = new Schema({
   role: {
     type: String,
     default: 'user'
-  },
-  cart: [Item],
-  transactions: []
+  }
 });

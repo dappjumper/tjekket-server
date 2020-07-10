@@ -10,32 +10,29 @@ const { scryptSync, randomBytes } = require('crypto');
 const salt = (process.env.JWT_SECRET || defaultSecret).toString('hex')
 const getHash = (password) => scryptSync(password, salt, 32).toString('hex')
 
-const jwt = require('jsonwebtoken')
-
-
-const jwtGen = (result)=>{
-    return jwt.sign({
-        id: result._id,
-        role: result.role
-    }, process.env.JWT_SECRET || defaultSecret)
-}
-
-const determineSelector = require('./../determineSelector')
+const jwtHandler = require('./../jwtHandler')
 
 endpoint.start = function(app, prefix='') {
     // Read user. Via ID or email. Authorized user, admin, or higher required.
-    app.get('/user/:idEmailOrUsername', function(req,res){
+    app.get('/user/:id', jwtHandler.protected, function(req,res){
         User.findOne({
-            [(determineSelector(req.params.idEmailOrUsername))]:req.params.idEmailOrUsername
-        }, (error, user) => {
-            if(error || !user) res.status(404).send({status:404,error:"User not found"})
+            _id:mongoose.Types.ObjectId(req.params.id)
+        }, (error, result) => {
+            if(error || !result) return res.status(404).send({status:404,error:"User not found"})
+            if(req.user.role == 'user' && req.user.id.toString() !== result._id.toString()) return res.status(403).send({status:403,error:"Not authorized"})
+
+            let foundUser = result.toObject()
+
+            delete foundUser.password
+
+            res.status(200).send({status:200,user:foundUser})
         })
     })
 
-    // Create user, return JWT. Public. Returns JWT if user exists and password, email and username matches.
-    // Additionally sets owner if the email matches and the user does not exist already
+    // Create user, return JWT and user. Public. Returns JWT and user if user exists and password, email and username matches.
+    // Additionally sets owner if the email matches environment variable and the user does not exist already
     app.put('/user', function(req, res){
-        if(!req.body.email || !determineSelector(req.body.email) === 'email') return res.status(400).send({status:400,error:'No email specified'})
+        if(!req.body.email) return res.status(400).send({status:400,error:'No email specified'})
         if(!req.body.password) return res.status(400).send({status:400,error:'No password specified'})
         if(!req.body.username) return res.status(400).send({status:400,error:'No username specified'})
         let newUser = new User({
@@ -61,11 +58,13 @@ endpoint.start = function(app, prefix='') {
                         email: req.body.email,
                         username: req.body.username,
                         password: newUser.password
-                    }, function(error, result) {
+                    }, {password: false}, function(error, result) {
                         if(error) return res.status(403).send({status:403,error:"Incorrect password"})
+                        if(!result) return res.status(409).send({status:409,error:'Email and username does not match existing user'})
                         return res.send({
                             status: 200,
-                            token: jwtGen(result)
+                            token: jwtHandler.generate(result),
+                            user: result
                         })
                     })
                 } else {
@@ -73,21 +72,62 @@ endpoint.start = function(app, prefix='') {
                     return res.status(500).send({status:500,error:"Server error"})
                 }
             }
-            // Nothing tripped us up! Let's send them their token
-            if(!tryLogin) return res.status(201).send({
+            
+            if(tryLogin) return;
+
+            let insertedUser = result.toObject()
+
+            delete insertedUser.password
+
+            return res.status(201).send({
                 status: 201,
-                token: jwtGen(result)
+                token: jwtHandler.generate(result),
+                user: insertedUser
             })
         })
     })
 
     // Edit user, return new user. Authorized user, admin, or higher required.
-    app.post('/user/:idEmailOrUsername', function(req, res){
+    // Untested out of scope
+    app.post('/user', jwtHandler.protected, function(req, res){
+        let idToUpdate = mongoose.Types.ObjectId(req.user.id)
 
+        if(req.body.id && req.user.role !== 'user') {
+            idToUpdate = mongoose.Types.ObjectId(req.body.id)
+        } else {
+            if((req.body.id || req.user.id) !== req.user.id && req.user.role == 'user') return res.status(403).send({status:403,error:"Unauthorized"})
+        }
+
+        let updates = {}
+
+        if(req.body.email) updates.email = req.body.email
+        if(req.body.username) updates.email = req.body.username
+        if(req.body.name) updates.name = req.body.name
+        if(req.body.password) updates.password = getHash(req.body.password)
+
+        User.findOneAndUpdate({_id:idToUpdate}, updates, {password: false}, function(error, result){
+            if(error) return res.status(500).send({status:500,error:"Could not update user"})
+
+            if(result) return res.status(200).send()
+        })
     })
 
     // Delete user. Authorized user, admin, or higher required.
-    app.delete('/user/:idEmailOrUsername')
+    // Untested out of scope
+    app.delete('/user', jwtHandler.protected, function(req, res){
+        let idToRemove = mongoose.Types.ObjectId(req.user.id)
+
+        if(req.body.id && req.user.role !== 'user') {
+            idToRemove = mongoose.Types.ObjectId(req.body.id)
+        } else {
+            if(req.body.id !== req.user.id && req.user.role == 'user') return res.status(403).send({status:403,error:"Unauthorized"})
+        }
+
+        User.deleteOne({_id:idToRemove}, function(error, result){
+            if(error) return res.status(500).send({status:500,error:"Could not delete user"}) 
+            if(result) return res.status(200).send()
+        })
+    })
 }
 
 module.exports = endpoint

@@ -10,7 +10,8 @@ Database.start = function(){
 
             // Make sure we follow recommended options
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            useFindAndModify: false
         });
 
         // Declare db variable with above connection
