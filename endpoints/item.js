@@ -48,7 +48,7 @@ endpoint.start = function(app, prefix='') {
             _id: mongoose.Types.ObjectId(req.body.id)
         }, updates, function(error, result){
             if(!result) return res.status(404).send({status:404,error:'Item not found'})
-            if(error) return res.status(400).send({status:400,error:'Failed updating item'})
+            if(error) return res.status(500).send({status:500,error:'Failed updating item'})
             return res.status(200).send()
         })
     })
@@ -61,7 +61,7 @@ endpoint.start = function(app, prefix='') {
             _id: mongoose.Types.ObjectId(req.params.id)
         }, function(error, result){
             if(!result) return res.status(404).send({status:404,error:'Item not found'})
-            if(error) return res.status(400).send({status:400,error:'Failed deleting item'})
+            if(error) return res.status(500).send({status:500,error:'Failed deleting item'})
             return res.status(200).send()
         })
     })

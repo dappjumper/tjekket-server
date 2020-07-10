@@ -56,7 +56,7 @@ var tests = [
           })
     },
     function(){ // Get owner data
-        axios.get('/user/'+vars.owner._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+        axios.get('/user/'+vars.owner._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
             .then((result)=>{
                 if(vars.owner._id !== result.data.user._id) throw "Owner user is incorrect somehow"
                 this.next() 
@@ -66,7 +66,7 @@ var tests = [
             })
     },
     function() { // Try getting owner's data from user token
-        axios.get('/user/'+vars.owner._id, {headers:{'Authorization': 'Bearer '+vars.user.token}})
+        axios.get('/user/'+vars.owner._id, {headers:{'Authentication': 'Bearer '+vars.user.token}})
             .then((result)=>{
                 throw "Normal user stole owner data..."
             })
@@ -76,7 +76,7 @@ var tests = [
             })
     },
     function(){ // Change owner name
-        axios.post('/user',{name:newName}, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+        axios.post('/user',{name:newName}, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
             .then((result)=>{
                 if(result.status !== 200) throw "Failed to update name"
                 this.next()
@@ -86,7 +86,7 @@ var tests = [
             })
     },
     function(){ // Change user name
-        axios.post('/user',{name:"I am not John Doe"}, {headers:{'Authorization': 'Bearer '+vars.user.token}})
+        axios.post('/user',{name:"I am not John Doe"}, {headers:{'Authentication': 'Bearer '+vars.user.token}})
             .then((result)=>{
                 if(result.status !== 200) throw "Failed to update name for user"
                 this.next()
@@ -96,7 +96,7 @@ var tests = [
             })
     },
     function(){ // Verify user name change
-        axios.get('/user/'+vars.user._id, {headers:{'Authorization': 'Bearer '+vars.user.token}})
+        axios.get('/user/'+vars.user._id, {headers:{'Authentication': 'Bearer '+vars.user.token}})
             .then((result)=>{
                 if(result.data.user.name !== "I am not John Doe") throw "User changed name not working"
                 this.next()
@@ -106,7 +106,7 @@ var tests = [
             })
     },
     function(){ // Verify owner name change
-        axios.get('/user/'+vars.owner._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+        axios.get('/user/'+vars.owner._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
             .then((result)=>{
                 if(newName !== result.data.user.name) throw "New name did not change"
                 this.next() 
@@ -120,18 +120,18 @@ var tests = [
             name: "Contraband",
             price: 100*Math.random(),
             catalogs: []
-        }, {headers:{'Authorization': 'Bearer '+vars.user.token}}).then((result)=>{
+        }, {headers:{'Authentication': 'Bearer '+vars.user.token}}).then((result)=>{
             throw "Not supposed to be able to make categories"
         }).catch((e)=>{
             this.next()
         })
     },
     function(){ // Create two catalogs and a bunch of items, dirty waiting around
-        axios.put('/catalog', {name: 'Netto Uge 1'}, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+        axios.put('/catalog', {name: 'Netto Uge 1'}, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
             .then((result)=>{
                 if(result.status !== 201) throw "Did not receive confirmation"
                 catalogs.netto = result.data.catalog
-                axios.put('/catalog', {name: 'Bilka Uge 1'}, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+                axios.put('/catalog', {name: 'Bilka Uge 1'}, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
                     .then((result)=>{
                         if(result.status !== 201) throw "Did not receive confirmation"
                         catalogs.bilka = result.data.catalog
@@ -141,7 +141,7 @@ var tests = [
                                 name: "Item #"+i,
                                 price: 100*Math.random(),
                                 catalogs: [(Math.random() > 0.5 ? catalogs.bilka._id : catalogs.netto._id)]
-                            }, {headers:{'Authorization': 'Bearer '+vars.owner.token}}).then((result)=>{savedItems.push(result.data.item)}).catch((e)=>{})
+                            }, {headers:{'Authentication': 'Bearer '+vars.owner.token}}).then((result)=>{savedItems.push(result.data.item)}).catch((e)=>{})
                         }
                         setTimeout(()=>{
                             this.next()
@@ -151,7 +151,7 @@ var tests = [
             }).catch((e)=>{throw "Failed creating catalog"})
     },
     function() { // Grab Netto catalog and look at it's items
-        axios.get('/catalog/'+catalogs.bilka._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}})
+        axios.get('/catalog/'+catalogs.bilka._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}})
             .then((result)=>{
                 if(result.data.catalog.items.length==0) throw "Improbably empty catalogue, but can happen very rarely"
                 this.next()
@@ -161,15 +161,15 @@ var tests = [
             })
     },
     function(){ // Delete everything
-            axios.delete('/catalog/'+catalogs.netto._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}}).then(()=>{
-                axios.delete('/catalog/'+catalogs.bilka._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}}).then(()=>{
+            axios.delete('/catalog/'+catalogs.netto._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}}).then(()=>{
+                axios.delete('/catalog/'+catalogs.bilka._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}}).then(()=>{
                 }).catch((e)=>{throw throwErr(e)})
             }).catch((e)=>{throw throwErr(e)})
             for(let item in savedItems) {
-                axios.delete('/item/'+savedItems[item]._id, {headers:{'Authorization': 'Bearer '+vars.owner.token}}).then(()=>{}).catch((e)=>{throw throwErr(e)})
+                axios.delete('/item/'+savedItems[item]._id, {headers:{'Authentication': 'Bearer '+vars.owner.token}}).then(()=>{}).catch((e)=>{throw throwErr(e)})
             }
             setTimeout(()=>{
-                axios.delete('/user', {headers:{'Authorization': 'Bearer '+vars.owner.token}}).then(()=>{
+                axios.delete('/user', {headers:{'Authentication': 'Bearer '+vars.owner.token}}).then(()=>{
                 this.next()
                 }).catch((e)=>{throw throwErr(e)})
             },2000)

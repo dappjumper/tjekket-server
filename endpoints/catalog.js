@@ -22,7 +22,7 @@ endpoint.start = function(app, prefix='') {
                     $in: [catalogResult._id]
                 }
             }, function(error, result) {
-                if(error) return res.status(400).send({status:400,error:'Failed to populate catalog'})
+                if(error) return res.status(500).send({status:500,error:'Failed to populate catalog'})
 
                 let newCatalog = catalogResult.toObject()
                 newCatalog.items = result
@@ -57,7 +57,7 @@ endpoint.start = function(app, prefix='') {
             _id: mongoose.Types.ObjectId(req.body.id)
         }, updates, function(error, result){
             if(!result) return res.status(404).send({status:404,error:'Catalog not found'})
-            if(error) return res.status(400).send({status:400,error:'Failed updating catalog'})
+            if(error) return res.status(500).send({status:500,error:'Failed updating catalog'})
             return res.status(200).send()
         })
     })
@@ -70,7 +70,7 @@ endpoint.start = function(app, prefix='') {
             _id: mongoose.Types.ObjectId(req.params.id)
         }, function(error, result){
             if(!result) return res.status(404).send({status:404,error:'Catalog not found'})
-            if(error) return res.status(400).send({status:400,error:'Failed deleting catalog'})
+            if(error) return res.status(500).send({status:500,error:'Failed deleting catalog'})
             return res.status(200).send()
         })
     })

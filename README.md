@@ -27,18 +27,19 @@ OWNER_EMAIL=<name@domain.tld>*
 
 ## Public endpoints
 These endpoints require no Authentication
-* [Read Catalog](doc/catalog/get.md) : GET `/catalog/{id}`
-* [Read Item](doc/item/get.md) : GET `/item/{id}`
+* [Read Catalog](doc/catalog/get.md) : GET `/catalog/{catalogid}`
+* [Read Item](doc/item/get.md) : GET `/item/{itemid}`
 * [Login & Registration](doc/user/put.md) : PUT `/user`
 
 ## Endpoints that require Authentication
 Closed endpoints require a valid JWT token in the Authentication header of the request.
+
 A token can be acquired from the [Login & Registration](user/put.md) endpoint
 
 Requests are further divided in roles `owner` <- `admin` <- `user`
 
 ## User related
-* [Get specific user](doc/user/get.md) : GET `/user/{id}`
+* [Get specific user](doc/user/get.md) : GET `/user/{userid}`
 * [Update user](doc/user/post.md) : POST `/user`
 * [Delete user](doc/user/delete.md) : DELETE `/user`
 
