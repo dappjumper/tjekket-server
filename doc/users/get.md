@@ -1,6 +1,6 @@
-# Read users
+# Read all users
 
-**URL** : `/user/{userid}`
+**URL** : `/users`
 
 **Method** : `GET`
 
@@ -16,35 +16,27 @@
 {
     "status": 200,
     "token": "xxxxx.yyyyy.zzzzz",
-    "user": {
+    "users": [{
         "_id": "5f08354398c5f52aa4d9ab79",
         "name": "I am not John Doe",
         "isVerified": false,
         "role": "user",
         "email": "someuser@somedomain.com",
         "username": "johnny"
-    }
+    },{
+        "_id": "ejd8f3r8jvduuwehri878347",
+        "name": "Johan",
+        "isVerified": false,
+        "role": "user",
+        "email": "someuser2@somedomain.com",
+        "username": "johnny2"
+    },]
 }
 ```
 
 ## Error Response
 
-**Condition** : User ID not found in database
-
-**Code** : `404 NOT FOUND`
-
-**Content** :
-
-```json
-{
-    "status": 404,
-    "error": "User not found"
-}
-```
-
-## Error Response
-
-**Condition** : If authenticated as user and not same ID as requested resource
+**Condition** : If not authenticated is admin or owner
 
 **Code** : `403 FORBIDDEN`
 

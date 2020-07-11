@@ -13,13 +13,24 @@ const getHash = (password) => scryptSync(password, salt, 32).toString('hex')
 const jwtHandler = require('./../jwtHandler')
 
 endpoint.start = function(app, prefix='') {
+
+    // Get all users
+    app.get('/users', jwtHandler.protected, function(req, res){
+        if(req.user.role !== 'owner') return res.status(403).send({status:403,error:"Not authorized"})
+        Catalog.find(function(error, users){
+            if(error || !users) return res.status(404).send({status:404,error:'Not found'})
+
+            return res.status(200).send({status:200,users:users})
+        })
+    })
+
     // Read user. Via ID or email. Authorized user, admin, or higher required.
     app.get('/user/:id', jwtHandler.protected, function(req,res){
+        if(req.user.role == 'user' && req.user.id.toString() !== result._id.toString()) return res.status(403).send({status:403,error:"Not authorized"})
         User.findOne({
             _id:mongoose.Types.ObjectId(req.params.id)
         }, (error, result) => {
             if(error || !result) return res.status(404).send({status:404,error:"User not found"})
-            if(req.user.role == 'user' && req.user.id.toString() !== result._id.toString()) return res.status(403).send({status:403,error:"Not authorized"})
 
             let foundUser = result.toObject()
 

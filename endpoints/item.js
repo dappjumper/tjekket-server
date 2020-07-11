@@ -8,6 +8,16 @@ const Catalog = mongoose.model('Catalog', require('./../schemas/catalog.js'))
 const jwtHandler = require('./../jwtHandler')
 
 endpoint.start = function(app, prefix='') {
+
+    // Get all catalogs
+    app.get('/items', function(req, res){
+        Catalog.find(function(error, catalogResult){
+            if(error || !catalogResult) return res.status(404).send({status:404,error:'Not found'})
+
+            return res.status(200).send({status:200,catalogs:catalogResult})
+        })
+    })
+
     // Read item. Via ID or slug. Public.
     app.get('/item/:id', function(req, res){
         if(!req.params.id) return res.status(400).send({status:400,error:'ID not specified'})
