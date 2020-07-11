@@ -33,7 +33,7 @@ OWNER_EMAIL=<name@domain.tld>*
 These endpoints require no Authentication
 * [Read all Catalogs](doc/catalogs/get.md) : GET `/catalogs`
 * [Read Catalog](doc/catalog/get.md) : GET `/catalog/{catalogid}`
-* [Read all Items](doc/items/get.md) : GET `/item`
+* [Read all Items](doc/items/get.md) : GET `/items`
 * [Read Item](doc/item/get.md) : GET `/item/{itemid}`
 * [Login & Registration](doc/user/put.md) : PUT `/user`
 
