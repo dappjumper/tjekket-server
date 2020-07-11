@@ -14,7 +14,7 @@ endpoint.start = function(app, prefix='') {
         Item.find(function(error, items){
             if(error || !items) return res.status(404).send({status:404,error:'Not found'})
 
-            return res.status(200).send({status:200,catalogs:items})
+            return res.status(200).send({status:200,items:items})
         })
     })
 
