@@ -11,10 +11,10 @@ endpoint.start = function(app, prefix='') {
 
     // Get all catalogs
     app.get('/items', function(req, res){
-        Catalog.find(function(error, catalogResult){
-            if(error || !catalogResult) return res.status(404).send({status:404,error:'Not found'})
+        Item.find(function(error, items){
+            if(error || !items) return res.status(404).send({status:404,error:'Not found'})
 
-            return res.status(200).send({status:200,catalogs:catalogResult})
+            return res.status(200).send({status:200,catalogs:items})
         })
     })
 
