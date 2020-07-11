@@ -31,7 +31,9 @@ OWNER_EMAIL=<name@domain.tld>*
 
 ## Public endpoints
 These endpoints require no Authentication
+* [Read all Catalogs](doc/catalogs/get.md) : GET `/catalogs`
 * [Read Catalog](doc/catalog/get.md) : GET `/catalog/{catalogid}`
+* [Read all Items](doc/items/get.md) : GET `/item`
 * [Read Item](doc/item/get.md) : GET `/item/{itemid}`
 * [Login & Registration](doc/user/put.md) : PUT `/user`
 
@@ -43,7 +45,8 @@ A token can be acquired from the [Login & Registration](user/put.md) endpoint
 Requests are further divided in roles `owner` <- `admin` <- `user`
 
 ## User related
-* [Get specific user](doc/user/get.md) : GET `/user/{userid}`
+* [Read all Users](doc/users/get.md) : GET `/users`
+* [Read specific user](doc/user/get.md) : GET `/user/{userid}`
 * [Update user](doc/user/post.md) : POST `/user`
 * [Delete user](doc/user/delete.md) : DELETE `/user`
 

@@ -4,7 +4,7 @@
 
 **Method** : `GET`
 
-**Auth required** : YES. Elevated and self.
+**Auth required** : YES. Elevated.
 
 ## Success Response
 
