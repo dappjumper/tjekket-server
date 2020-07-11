@@ -3,6 +3,8 @@
 
 [Root demo site](https://tjekket-server.hostman.site/)
 
+[All items example](https://tjekket-server.hostman.site/items)
+
 [Catalog example](https://tjekket-server.hostman.site/catalog/5f0870a0f140b82b98b1930b)
 
 ## Introduction
